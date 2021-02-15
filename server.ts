@@ -1,18 +1,18 @@
-const path = require("path");
-const http = require("http");
-const express = require("express");
-const socketio = require("socket.io");
+// import http from "http";
+import express from "express";
+import * as socketio from "socket.io";
+import * as path from "path";
 
 const app = express();
-const server = http.createServer(app);
-const io = socketio(server);
-const activeUsers = [];
+const server = require("http").Server(app);
+const io = require("socket.io")(server);
+const activeUsers: socketio.Socket[] = [];
 
 //set static folder
 app.use(express.static(path.join(__dirname, "public")));
 
 //run when a client connects
-io.on("connection", (socket) => {
+io.on("connection", (socket: socketio.Socket) => {
   console.log("New WS connection...");
   activeUsers.push(socket);
 
