@@ -2,40 +2,39 @@
 import express from "express";
 import * as socketio from "socket.io";
 import * as path from "path";
+import Database from './database';
+import config from "./config";
 
-const app = express();
+const app: express.Application = express();
 const server = require("http").Server(app);
 const io = require("socket.io")(server);
-const activeUsers: socketio.Socket[] = [];
 
-//set static folder
+// connect to database
+Database.connect().then(() => console.log('Connected to database'))
+    .catch(err => console.log('Could not connect to database. ' + err.stack ));
+
+// set static folder
 app.use(express.static(path.join(__dirname, "public")));
 
-//run when a client connects
+// run when a client connects
 io.on("connection", (socket: socketio.Socket) => {
   console.log("New WS connection...");
-  activeUsers.push(socket);
-
   socket.emit("message", { message: "welcome to the chat", username: "chat" });
+
   socket.on("new_user", (data) => {
     console.log(`${data.username} joined the chat`);
-    activeUsers.forEach((user) =>
-      user.emit("new_user_join", { username: data.username })
-    );
+    io.sockets.emit("new_user_join", { username: data.username })
   });
   socket.on('message', (data) => {
       console.log(data);
-      activeUsers.forEach((user) => {
-          user.emit("message", data);
-      })
+      io.sockets.emit("message", data);
   });
+
   socket.on("user_typing", (data) => {
-      activeUsers.forEach((user) => {
-          socket.id !== user.id && user.emit("user_typing", { username: data.username });
-      });
-  })
+      socket.broadcast.emit('user_typing', { username: data.username });
+  });
 });
 
-const PORT = 3000 || process.env.PORT;
+const PORT = config.PORT;
 
 server.listen(PORT, () => console.log(`Server running on port ${PORT}`));
