@@ -1,4 +1,4 @@
-import Message, {IMessage} from './model';
+import Message from './model';
 
 export default class MessageService {
     public static createMessage(username: string, message: string) {

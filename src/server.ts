@@ -4,6 +4,7 @@ import * as socketio from "socket.io";
 import * as path from "path";
 import Database from './database';
 import config from "./config";
+import MessageService from "./service";
 
 const app: express.Application = express();
 const server = require("http").Server(app);
@@ -25,8 +26,13 @@ io.on("connection", (socket: socketio.Socket) => {
     console.log(`${data.username} joined the chat`);
     io.sockets.emit("new_user_join", { username: data.username })
   });
-  socket.on('message', (data) => {
+  socket.on('message', async (data) => {
       console.log(data);
+      try {
+          await MessageService.createMessage(data.username, data.message);
+      } catch (err) {
+          console.log(err.stack);
+      }
       io.sockets.emit("message", data);
   });
 
