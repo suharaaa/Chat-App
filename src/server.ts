@@ -31,7 +31,7 @@ io.on("connection", (socket: socketio.Socket) => {
       try {
           await MessageService.createMessage(data.username, data.message);
       } catch (err) {
-          console.log(err.stack);
+          console.log(err);
       }
       io.sockets.emit("message", data);
   });
