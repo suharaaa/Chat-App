@@ -1,6 +1,6 @@
 import Message from './model';
 
-export default class MessageService {
+export default class SessionService {
     public static createMessage(username: string, message: string) {
         return new Message({ username, message }).save();
     }

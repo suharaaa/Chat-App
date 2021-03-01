@@ -5,10 +5,14 @@ import * as path from "path";
 import Database from './database';
 import config from "./config";
 import MessageService from "./service";
+import Router from './router';
+import bodyParser from 'body-parser';
 
 const app: express.Application = express();
 const server = require("http").Server(app);
 const io = require("socket.io")(server);
+
+app.use(bodyParser.json());
 
 // connect to database
 Database.connect().then(() => console.log('Connected to database'))
@@ -16,6 +20,8 @@ Database.connect().then(() => console.log('Connected to database'))
 
 // set static folder
 app.use(express.static(path.join(__dirname, "public")));
+
+app.use(Router);
 
 // run when a client connects
 io.on("connection", (socket: socketio.Socket) => {
