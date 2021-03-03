@@ -1,0 +1,48 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <link rel="stylesheet" href="css/style.css" />
+    <title>Chat App</title>
+  </head>
+  <body>
+    <div class="join-container">
+      <header class="join-header">
+        <h1>Login</h1>
+      </header>
+      <form onsubmit="return false;">
+        <div class="form-control">
+          <label for="username">Email</label>
+          <input
+            type="text"
+            name="email"
+            id="email"
+            placeholder="Enter email..."
+            required
+          />
+        </div>
+        <div class="form-control">
+          <label for="password">Password</label>
+          <input
+            type="password"
+            name="password"
+            id="password"
+            placeholder="Enter password..."
+            required
+          />
+        </div>
+        <div class="form-control">
+          <label for="userType">User Type</label>
+          <select name="userType" id="userType">
+            <option value="tutor">Tutor</option>
+            <option value="student">Student</option>
+          </select>
+        </div>
+        <button type="submit" class="btn" onclick="login()">Login</button>
+      </form>
+    </div>
+    <script src="js/login.js"></script>
+  </body>
+</html>
