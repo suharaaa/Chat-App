@@ -11,7 +11,7 @@ export interface ISession extends Document {
   endBy: string;
 }
 
-enum USER_TYPE {
+export enum USER_TYPE {
     TUTOR = "tutor",
     STUDENT = "student"
 }
@@ -28,7 +28,7 @@ const sessionSchema: Schema = new Schema(
         username: { type: String, required: true }
       },
     ],
-    tutorID: { type: String, required: true },
+    tutorID: { type: String },
     students: [{ type: String, required: true }],
     endTime: { type: Date },
     tutorJoinedTime: { type: Date },

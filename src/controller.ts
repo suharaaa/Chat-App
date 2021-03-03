@@ -1,11 +1,11 @@
 import { Request, Response } from 'express';
-import SessionService from "./service";
 import jwt from 'jsonwebtoken';
-import Session from './model';
+import Session, {USER_TYPE} from './model';
 
 const users = [
-    { email: "suhara@gmail.com", username: "suhara", password: "suhara123" },
-    { email: "ntb6184@gmail.com", username: "nandun", password: "nandun123" }
+    { email: "suhara@gmail.com", username: "suhara", password: "suhara123", userType: USER_TYPE.STUDENT },
+    { email: "malith@gmail.com", username: "malith", password: "malith123", userType: USER_TYPE.STUDENT },
+    { email: "ntb6184@gmail.com", username: "nandun", password: "nandun123", userType: USER_TYPE.TUTOR },
 ];
 
 const getAllMessages = async (req: Request, res: Response): Promise<Response | null> => {
@@ -20,13 +20,13 @@ const createSession = async (req: Request, res: Response): Promise<Response | nu
     const { subTopic } = req.body;
 
     if (!subTopic) {
-        return res.status(400).json({ 
+        return res.status(400).json({
             message: 'Parameter \'subTopic\' is undefined or is an empty string'
-        })
+        });
     }
-    
+
     try {
-        const session = new Session({ subTopic });
+        const session = new Session({ subTopic, students: [req.headers.username] });
         const result = await session.save();
 
         return res.status(200).json(result);
@@ -38,18 +38,18 @@ const createSession = async (req: Request, res: Response): Promise<Response | nu
 
 const login = async (req: Request, res: Response): Promise<Response | null> => {
 
-    const { email, password } = req.body;
-    
+    const { email, password, userType } = req.body;
+
     // falsey values 0, '', null, undefined, false
-    if (!email || !password) {
+    if (!email || !password || !userType) {
         return res.status(400).json({message: 'email or password undefined'});
     }
 
     try {
 
-        const user = users.filter(u => u.email === email);
+        const user = users.filter(u => u.email === email && u.userType === userType);
 
-        
+
         if (user.length === 0) {
             return res.status(400).json({ message: 'Invalid login'});
         }

@@ -8,7 +8,7 @@ interface IPayload {
 }
 
 const auth = (req: Request, res: Response, next: NextFunction) => {
-    try { 
+    try {
         const token = req.headers.authorization;
 
         if (!token) {
@@ -18,7 +18,7 @@ const auth = (req: Request, res: Response, next: NextFunction) => {
         }
 
         if (!token.startsWith('Bearer ')) {
-            return res.status(403).json({ 
+            return res.status(403).json({
                 message: 'invalid token'
             });
         }
@@ -38,7 +38,8 @@ const auth = (req: Request, res: Response, next: NextFunction) => {
             return res.status(403).json({ message: 'expired token' });
         }
 
-        // req.user = { username: payload.username };
+        // custom declaration ekak karanna kammali nisa mehema damme
+        req.headers.username = payload.username;
 
         next();
     } catch (err) {

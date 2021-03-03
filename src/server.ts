@@ -24,26 +24,30 @@ app.use(express.static(path.join(__dirname, "public")));
 app.use(Router);
 
 // run when a client connects
-io.on("connection", (socket: socketio.Socket) => {
+io.on("connection", (socket: any) => {
   console.log("New WS connection...");
-  socket.emit("message", { message: "welcome to the chat", username: "chat" });
+  const roomId = socket.handshake.query.sessionId;
+  socket.join(roomId);
 
-  socket.on("new_user", (data) => {
+  io.to(roomId).emit("message", { message: "welcome to the chat", username: "chat" });
+
+  socket.on("new_user", (data: any) => {
     console.log(`${data.username} joined the chat`);
-    io.sockets.emit("new_user_join", { username: data.username })
+    io.to(roomId).emit("new_user_join", { username: data.username })
   });
-  socket.on('message', async (data) => {
+
+  socket.on('message', async (data: any) => {
       console.log(data);
       try {
           await MessageService.createMessage(data.username, data.message);
       } catch (err) {
           console.log(err);
       }
-      io.sockets.emit("message", data);
+      io.to(roomId).emit("message", data);
   });
 
-  socket.on("user_typing", (data) => {
-      socket.broadcast.emit('user_typing', { username: data.username });
+  socket.on("user_typing", (data: any) => {
+      io.to(roomId).broadcast.emit('user_typing', { username: data.username });
   });
 });
 
