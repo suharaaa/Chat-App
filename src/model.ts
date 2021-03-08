@@ -1,14 +1,22 @@
-import mongoose, { Schema, Document, ObjectId } from "mongoose";
+import mongoose, { Schema, Document } from "mongoose";
 
 export interface ISession extends Document {
   subTopic: string;
-  messages: [];
+  messages: IMessage[];
   tutorID: string;
   students: string[];
   endTime: Date;
   tutorJoinedTime: Date;
   questionCount: number;
   endBy: string;
+}
+
+export interface IMessage extends Document {
+  content: string;
+  createdAt: Date;
+  userID: string;
+  userType: string;
+  username: string
 }
 
 export enum USER_TYPE {

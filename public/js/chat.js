@@ -1,6 +1,14 @@
-const socket = io();
+const urlParams = new URLSearchParams(window.location.search);
+const socket = io({ query: "id=" + urlParams.get("id") });
+// console.log(urlParams.get("id"));
 
-//+= means append to end of the string
+// read token in session storage
+const token = sessionStorage.getItem("token");
+const payload = token.split(".")[1];
+const decodedPayload = JSON.parse(atob(payload));
+console.log(decodedPayload);
+
+// += means append to end of the string
 socket.on("message", (data) => {
   console.log(data);
   document.getElementById("chat-messages").innerHTML += generateMsg(data);
@@ -15,13 +23,17 @@ if (!username) {
 socket.emit("new_user", { username });
 socket.on("new_user_join", (data) => {
   console.log(`${data.username} joined the chat`);
-  document.getElementById("chat-messages").innerHTML += `<p class="user-join"><small>${data.username} joined the chat!</small]></>`;
+  document.getElementById(
+    "chat-messages"
+  ).innerHTML += `<p class="user-join"><small>${data.username} joined the chat!</small]></>`;
 });
 socket.on("user_typing", (data) => {
-    document.getElementById("typing-area").innerText = `${data.username} is typing...`;
-    setTimeout(() => {
-        document.getElementById("typing-area").innerText = '';
-    }, 3000);
+  document.getElementById(
+    "typing-area"
+  ).innerText = `${data.username} is typing...`;
+  setTimeout(() => {
+    document.getElementById("typing-area").innerText = "";
+  }, 3000);
 });
 
 const generateMsg = (data) => `<div class="message">
@@ -54,9 +66,14 @@ const formatDate = (date) => {
 
 const chatMessage = () => {
   const message = document.getElementById("msg").value;
-  socket.emit("message", { message, username });
+  socket.emit("message", {
+    message,
+    username,
+    userID: decodedPayload.userID,
+    userType: decodedPayload.userType,
+  });
 };
 
 const sendTypingEvent = () => {
-    socket.emit("user_typing", { username });
-}
+  socket.emit("user_typing", { username });
+};

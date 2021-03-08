@@ -9,10 +9,11 @@ const joinChat = async () => {
   try {
       const session = await createSession(topic);
       console.log(session);
+      window.location.href = "/chat.html?id=" + session._id;
+
   } catch (err) {
       console.error(err);
   }
-  window.location.href = "/chat.html";
 };
 
 const createSession = (subTopic) => {

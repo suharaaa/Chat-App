@@ -1,11 +1,29 @@
-import Message from './model';
+import Session from "./model";
 
 export default class SessionService {
-    public static createMessage(username: string, message: string) {
-        return new Message({ username, message }).save();
-    }
+  public static createMessage(
+    roomID: string,
+    username: string,
+    message: string,
+    userID: string,
+    userType: string
+  ) {
+    const messageObject = {
+      createdAt: new Date(),
+      content: message,
+      userID,
+      userType: userType,
+      username,
+    };
+    return Session.updateOne(
+      { _id: roomID },
+      {
+        $push: { messages: messageObject },
+      }
+    );
+  }
 
-    public static getAllMessages() {
-        return Message.find();
-    }
+  public static getAllMessages() {
+    return Session.find();
+  }
 }

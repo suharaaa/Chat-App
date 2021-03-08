@@ -3,9 +3,9 @@ import jwt from 'jsonwebtoken';
 import Session, {USER_TYPE} from './model';
 
 const users = [
-    { email: "suhara@gmail.com", username: "suhara", password: "suhara123", userType: USER_TYPE.STUDENT },
-    { email: "malith@gmail.com", username: "malith", password: "malith123", userType: USER_TYPE.STUDENT },
-    { email: "ntb6184@gmail.com", username: "nandun", password: "nandun123", userType: USER_TYPE.TUTOR },
+    { userID: '1', email: "suhara@gmail.com", username: "suhara", password: "suhara123", userType: USER_TYPE.STUDENT },
+    { userID: '2', email: "malith@gmail.com", username: "malith", password: "malith123", userType: USER_TYPE.STUDENT },
+    { userID: '3', email: "ntb6184@gmail.com", username: "nandun", password: "nandun123", userType: USER_TYPE.TUTOR },
 ];
 
 const getAllMessages = async (req: Request, res: Response): Promise<Response | null> => {
@@ -61,7 +61,7 @@ const login = async (req: Request, res: Response): Promise<Response | null> => {
         }
 
         const token = jwt.sign(
-            { username: _user.username, expiry: new Date().getTime() + 60 * 60 * 1000 },
+            { userID: _user.userID, username: _user.username, userType: _user.userType, expiry: new Date().getTime() + 60 * 60 * 1000 },
             '1qaz2wsx@'
         );
 
