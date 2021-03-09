@@ -1,6 +1,6 @@
 import { Request, Response } from 'express';
 import jwt from 'jsonwebtoken';
-import Session, {USER_TYPE} from './model';
+import Session, {SESSION_STATE, USER_TYPE} from './model';
 
 const users = [
     { userID: '1', email: "suhara@gmail.com", username: "suhara", password: "suhara123", userType: USER_TYPE.STUDENT },
@@ -68,14 +68,34 @@ const login = async (req: Request, res: Response): Promise<Response | null> => {
         return res.status(200).json({ token });
 
     } catch (err) {
-        return res.status(500).json({message: err.message});
+        return res.status(500).json({
+            message: err.message
+        });
     }
 }
 
+const getSessionsByState = async (req: Request, res: Response): Promise<Response | null> => {
+    const {sessionState} = req.params;
+    if (!Object.values(SESSION_STATE).includes(sessionState as SESSION_STATE)) {
+        return res.status(400).json({
+            error: 'Session state is invalid'
+        });
+    }
+    
+    try {
+        const sessions = await Session.find({status: sessionState as SESSION_STATE});
+        return res.status(200).json(sessions);
+    } catch (error) {
+        return res.status(500).json({
+            message: error.message
+        });
+    }
+}
 
 export default {
     getAllMessages,
     createSession,
     login,
-    getSession
+    getSession,
+    getSessionsByState
 }

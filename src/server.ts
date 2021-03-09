@@ -36,9 +36,13 @@ io.on("connection", (socket: any) => {
     username: "chat",
   });
 
+  // runs when a user join
   socket.on("new_user", (data: any) => {
     console.log(`${data.username} joined the chat`);
     io.to(roomId).emit("new_user_join", { username: data.username });
+    // if (data.userType === "tutor") {
+        
+    // }
   });
 
   socket.on("message", async (data: any) => {

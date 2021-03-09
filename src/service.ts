@@ -1,12 +1,12 @@
-import Session from "./model";
-
+import Session, {USER_TYPE} from "./model";
+// module: export { default: SessionService }
 export default class SessionService {
   public static createMessage(
     roomID: string,
     username: string,
     message: string,
     userID: string,
-    userType: string
+    userType: USER_TYPE
   ) {
     const messageObject = {
       createdAt: new Date(),
