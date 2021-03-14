@@ -26,4 +26,8 @@ export default class SessionService {
   public static getAllMessages() {
     return Session.find();
   }
+
+  // public static handleTutorLeave(): void {
+  //
+  // }
 }

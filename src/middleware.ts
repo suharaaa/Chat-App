@@ -3,6 +3,7 @@ import jwt from 'jsonwebtoken';
 
 interface IPayload {
     username: string;
+    userType: string;
     expiry: number;
     iat: number;
 }
@@ -40,6 +41,7 @@ const auth = (req: Request, res: Response, next: NextFunction) => {
 
         // custom declaration ekak karanna kammali nisa mehema damme
         req.headers.username = payload.username;
+        req.headers.userType = payload.userType;
 
         next();
     } catch (err) {

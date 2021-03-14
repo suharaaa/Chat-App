@@ -1,17 +1,41 @@
 const urlParams = new URLSearchParams(window.location.search);
-const socket = io({ query: "id=" + urlParams.get("id") });
+const id = urlParams.get("id");
+const socket = io({ query: "id=" + id });
+
 // console.log(urlParams.get("id"));
 
 // read token in session storage
 const token = sessionStorage.getItem("token");
 
 if (!token) {
-  window.location.href = "/index.html";
+  window.location.href = "/login.html";
 }
 
 const payload = token.split(".")[1];
 const decodedPayload = JSON.parse(atob(payload));
 console.log(decodedPayload);
+
+// check if session is open
+// get session from db
+fetch('/sessions/'+id, {
+  headers: new Headers({
+    Authorization: 'Bearer ' + token,
+    'Content-Type': 'application/json'
+  })
+}).then(response => response.json())
+    .then(data => {
+      if (!(data && (data.status === 'open' || data.status === 'active'))) {
+        if (decodedPayload.userType === 'student') {
+          window.location.href = "/index.html";
+        } else {
+          window.location.href = "/sessions.html";
+        }
+      }
+    });
+
+if (decodedPayload.userType === 'student') {
+  document.getElementById('btnLeave').style.visibility = "hidden";
+}
 
 // += means append to end of the string
 socket.on("message", (data) => {
@@ -26,8 +50,9 @@ socket.on("new_user_join", (data) => {
   console.log(`${data.username} joined the chat`);
   document.getElementById(
     "chat-messages"
-  ).innerHTML += `<p class="user-join"><small>${data.username} joined the chat!</small]></>`;
+  ).innerHTML += `<p class="user-join"><small>${data.username} joined the chat!</small]></p><br>`;
 });
+
 socket.on("user_typing", (data) => {
   document.getElementById(
     "typing-area"

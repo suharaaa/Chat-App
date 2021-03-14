@@ -1,4 +1,4 @@
-import { Request, Response } from 'express';
+import {Request, Response} from 'express';
 import jwt from 'jsonwebtoken';
 import Session, {SESSION_STATE, USER_TYPE} from './model';
 
@@ -93,10 +93,29 @@ const getSessionsByState = async (req: Request, res: Response): Promise<Response
     }
 }
 
+const endSession = async (req: Request, res: Response): Promise<Response | null> => {
+    const { userType } = req.headers;
+    try {
+        const result = await Session.findByIdAndUpdate(req.params.id, {
+            $set: {
+                status: SESSION_STATE.CLOSED,
+                endTime: new Date(),
+                endBy: userType === 'tutor'? userType: 'student',
+            }
+        });
+        return res.status(200).json(result);
+    } catch (err) {
+        return res.status(500).json({
+            message: err.message
+        });
+    }
+}
+
 export default {
     getAllMessages,
     createSession,
     login,
     getSession,
-    getSessionsByState
+    getSessionsByState,
+    endSession
 }

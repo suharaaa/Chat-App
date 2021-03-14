@@ -31,7 +31,7 @@ io.on("connection", (socket: any) => {
   console.log(roomId);
   socket.join(roomId);
 
-  io.to(roomId).emit("message", {
+  socket.emit("message", {
     message: "welcome to the chat",
     username: "chat",
   });
@@ -39,10 +39,15 @@ io.on("connection", (socket: any) => {
   // runs when a user join
   socket.on("new_user", (data: any) => {
     console.log(`${data.username} joined the chat`);
-    io.to(roomId).emit("new_user_join", { username: data.username });
-    // if (data.userType === "tutor") {
-        
-    // }
+    socket.broadcast.to(roomId).emit("new_user_join", { username: data.username });
+    if (data.userType === "tutor") {
+      // todo: update session with tutor
+    }
+  });
+
+  socket.on("tutor_leave", (data: any) => {
+    // todo: handle tutor leave
+
   });
 
   socket.on("message", async (data: any) => {
@@ -56,7 +61,7 @@ io.on("connection", (socket: any) => {
   });
 
   socket.on("user_typing", (data: any) => {
-    socket.broadcast.to(roomId).broadcast.emit("user_typing", { username: data.username });
+    socket.broadcast.to(roomId).emit("user_typing", { username: data.username });
   });
 });
 
