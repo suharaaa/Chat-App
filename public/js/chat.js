@@ -4,6 +4,11 @@ const socket = io({ query: "id=" + urlParams.get("id") });
 
 // read token in session storage
 const token = sessionStorage.getItem("token");
+
+if (!token) {
+  window.location.href = "/index.html";
+}
+
 const payload = token.split(".")[1];
 const decodedPayload = JSON.parse(atob(payload));
 console.log(decodedPayload);
@@ -14,13 +19,9 @@ socket.on("message", (data) => {
   document.getElementById("chat-messages").innerHTML += generateMsg(data);
 });
 
-const username = localStorage.getItem("username");
-console.log("username from ls", username);
-if (!username) {
-  window.location.href = "/index.html";
-}
-
+const username = decodedPayload.username;
 socket.emit("new_user", { username });
+
 socket.on("new_user_join", (data) => {
   console.log(`${data.username} joined the chat`);
   document.getElementById(

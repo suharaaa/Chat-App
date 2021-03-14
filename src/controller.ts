@@ -6,6 +6,7 @@ const users = [
     { userID: '1', email: "suhara@gmail.com", username: "suhara", password: "suhara123", userType: USER_TYPE.STUDENT },
     { userID: '2', email: "malith@gmail.com", username: "malith", password: "malith123", userType: USER_TYPE.STUDENT },
     { userID: '3', email: "ntb6184@gmail.com", username: "nandun", password: "nandun123", userType: USER_TYPE.TUTOR },
+    { userID: '4', email: "tutor@mailinator.com", username: "tutor", password: "1qaz2wsx@", userType: USER_TYPE.TUTOR },
 ];
 
 const getAllMessages = async (req: Request, res: Response): Promise<Response | null> => {
@@ -81,7 +82,7 @@ const getSessionsByState = async (req: Request, res: Response): Promise<Response
             error: 'Session state is invalid'
         });
     }
-    
+
     try {
         const sessions = await Session.find({status: sessionState as SESSION_STATE});
         return res.status(200).json(sessions);

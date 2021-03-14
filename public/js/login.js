@@ -20,11 +20,13 @@ const login = () => {
     .then((response) => response.json())
     .then((data) => {
       console.log("Success:", data);
+      console.log(userType);
       sessionStorage.setItem("token", data.token);
       if (userType === "student") {
         window.location.href = "/index.html";
         return;
-      }else if (userType === "tutor") {
+      } else if (userType === "tutor") {
+        window.location.href = "/sessions.html";
         return;
       }
     })

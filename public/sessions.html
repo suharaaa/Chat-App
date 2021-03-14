@@ -1,16 +1,27 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <meta http-equiv="X-UA-Compatible" content="IE=edge">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta charset="UTF-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <link rel="stylesheet" href="css/style.css" />
     <title>Chat App</title>
 </head>
 <body>
-    <ul>
-        <li>English  <button type="button">Join</button></li> 
-        <li>Math     <button type="button">Join</button></li>
-        <li>Science  <button type="button">Join</button></li>
-    </ul> 
+<div class="join-container">
+    <header class="join-header">
+        <h1>Active Sessions</h1>
+    </header>
+
+    <main class="chat-main">
+        <div class="session-container">
+            <ul style="color: black;" id="sessionContainer">
+
+            </ul>
+        </div>
+    </main>
+
+    <script src="./js/sessions.js"></script>
+</div>
 </body>
 </html>

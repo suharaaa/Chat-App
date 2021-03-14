@@ -191,3 +191,16 @@ a {
 .typing-area {
 	padding-left: 10px;
 }
+
+.session-container {
+	background: white;
+	height: 60vh;
+	overflow-y: scroll;
+	max-width: 500px;
+	width: 500px;
+	padding: 20px;
+}
+
+.session-container li {
+	margin-bottom: 1rem;
+}
