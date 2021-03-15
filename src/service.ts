@@ -35,7 +35,14 @@ export default class SessionService {
         }
     );
   }
-  // public static handleTutorLeave(): void {
-  //
-  // }
+
+  public static setJoinedTutor(roomId: string, tutor: string, time: Date) {
+    return Session.updateOne(
+        { _id: roomId },
+        {
+          tutorID: tutor,
+          tutorJoinedTime: time
+        }
+    );
+  }
 }

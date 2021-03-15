@@ -37,17 +37,22 @@ io.on("connection", (socket: any) => {
   });
 
   // runs when a user join
-  socket.on("new_user", (data: any) => {
+  socket.on("new_user", async (data: any) => {
     console.log(`${data.username} joined the chat`);
     socket.broadcast.to(roomId).emit("new_user_join", { username: data.username });
     if (data.userType === "tutor") {
-      // todo: update session with tutor
+      try {
+        await MessageService.setJoinedTutor(roomId, data.username, new Date());
+      } catch (err) {
+        console.log(err);
+      }
     }
   });
 
   socket.on("tutor_leave", async (data: any) => {
     io.to(roomId).emit("tutor_leave", data);
     try {
+      await MessageService.setJoinedTutor(roomId, '', new Date());
       await MessageService.addJoinedTutor(roomId, data.username);
     } catch (err) {
       console.log(err);
