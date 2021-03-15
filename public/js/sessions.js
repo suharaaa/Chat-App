@@ -1,4 +1,8 @@
 const token = sessionStorage.getItem('token');
+
+if (!token) {
+    window.location.href = "/login.html";
+}
 // get sessions
 const loadActiveSessions = () => fetch(
     '/sessions/state/open',

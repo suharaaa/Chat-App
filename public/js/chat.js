@@ -25,11 +25,7 @@ fetch('/sessions/'+id, {
 }).then(response => response.json())
     .then(data => {
       if (!(data && (data.status === 'open' || data.status === 'active'))) {
-        if (decodedPayload.userType === 'student') {
-          window.location.href = "/index.html";
-        } else {
-          window.location.href = "/sessions.html";
-        }
+        navigateBack();
       }
     });
 
@@ -60,6 +56,21 @@ socket.on("user_typing", (data) => {
   setTimeout(() => {
     document.getElementById("typing-area").innerText = "";
   }, 3000);
+});
+
+socket.on("end_session", (data) => {
+  document.getElementById(
+      "chat-messages"
+  ).innerHTML += `<p class="user-join"><small>Session ended by ${data.username}. Navigating back to home...</small]></p><br>`;
+  setTimeout(() => {
+    navigateBack();
+  }, 3000)
+});
+
+socket.on("tutor_leave", (data) => {
+  document.getElementById(
+      "chat-messages"
+  ).innerHTML += `<p class="user-join"><small>Tutor ${data.username} left the session. Notifying available tutors...</small]></p><br>`;
 });
 
 const generateMsg = (data) => `<div class="message">
@@ -103,3 +114,31 @@ const chatMessage = () => {
 const sendTypingEvent = () => {
   socket.emit("user_typing", { username });
 };
+
+const endSession = () => {
+  socket.emit("end_session", { username, userType: decodedPayload.userType });
+  fetch('/sessions/' + id, {
+    method: 'PUT',
+    headers: new Headers({
+      Authorization: 'Bearer ' + token,
+      "Content-Type": "application/json"
+    })
+  }).then(response => response.json())
+      .then(data => {
+        navigateBack();
+      }).catch(err => console.error(err));
+}
+
+const leaveSession = () => {
+  socket.emit("tutor_leave", { username });
+  window.location.href = "/sessions.html";
+}
+
+
+const navigateBack = () => {
+  if (decodedPayload.userType === "student") {
+    window.location.href = "/index.html";
+  } else {
+    window.location.href = "/sessions.html"
+  }
+}

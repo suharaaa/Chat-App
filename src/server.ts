@@ -46,8 +46,11 @@ io.on("connection", (socket: any) => {
   });
 
   socket.on("tutor_leave", (data: any) => {
-    // todo: handle tutor leave
+    io.to(roomId).emit("tutor_leave", data);
+  });
 
+  socket.on("end_session", (data: any) => {
+    io.to(roomId).emit("end_session", data);
   });
 
   socket.on("message", async (data: any) => {
