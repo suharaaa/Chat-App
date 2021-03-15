@@ -10,6 +10,7 @@ export interface ISession extends Document {
   questionCount: number;
   endBy: string;
   status: SESSION_STATE;
+  joinedTutors: string[];
 }
 
 export interface IMessage extends Document {
@@ -50,13 +51,16 @@ const sessionSchema: Schema = new Schema(
     questionCount: { type: Number, default: 0 },
     endBy: { type: String },
     status: { type: String, enum: SESSION_STATE, default: SESSION_STATE.OPEN },
+    joinedTutors: [
+        { type: String }
+    ],
   },
   { timestamps: true }
 );
 
 export default mongoose.model<ISession>("session", sessionSchema);
 
-// export { default: model, IMessage, USER_STATE } 
+// export { default: model, IMessage, USER_STATE }
 // import Schema from './model'
 // import * as Schema from ''
 // import { IMessage, USER_STATE } from './model'

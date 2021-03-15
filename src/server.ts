@@ -45,8 +45,13 @@ io.on("connection", (socket: any) => {
     }
   });
 
-  socket.on("tutor_leave", (data: any) => {
+  socket.on("tutor_leave", async (data: any) => {
     io.to(roomId).emit("tutor_leave", data);
+    try {
+      await MessageService.addJoinedTutor(roomId, data.username);
+    } catch (err) {
+      console.log(err);
+    }
   });
 
   socket.on("end_session", (data: any) => {

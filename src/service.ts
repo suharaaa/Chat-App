@@ -27,6 +27,14 @@ export default class SessionService {
     return Session.find();
   }
 
+  public static addJoinedTutor(roomId: string, tutor: string) {
+    return Session.updateOne(
+        { _id: roomId },
+        {
+          $push: { joinedTutors: tutor },
+        }
+    );
+  }
   // public static handleTutorLeave(): void {
   //
   // }
