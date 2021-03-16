@@ -10,11 +10,21 @@ const users = [
 ];
 
 const getAllMessages = async (req: Request, res: Response): Promise<Response | null> => {
-    return null;
+    try {
+        const result = await Session.findById(req.params.id, { _id: false, messages: true });
+        return res.status(200).json(result?.messages);
+    } catch (err) {
+        return res.status(500).json({ error: err.message });
+    }
 }
 
 const getSession = async (req: Request, res: Response): Promise<Response | null> => {
-    return res.status(200).send();
+    try {
+        const session = await Session.findById(req.params.id);
+        return res.status(200).json(session);
+    } catch (err) {
+        return res.status(500).json({ error: err.message });
+    }
 }
 
 const createSession = async (req: Request, res: Response): Promise<Response | null> => {

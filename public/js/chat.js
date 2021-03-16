@@ -1,3 +1,17 @@
+const toggleLoading = (isLoading) => {
+  const chatContainer = document.getElementById('chatContainer');
+  const loader = document.getElementById('loader');
+  if(isLoading) {
+    loader.style.visibility = "visible";
+    chatContainer.style.visibility="hidden";
+  } else {
+    chatContainer.style.visibility="visible";
+    loader.style.visibility = "hidden";
+  }
+}
+
+toggleLoading(true);
+
 const urlParams = new URLSearchParams(window.location.search);
 const id = urlParams.get("id");
 const socket = io({ query: "id=" + id });
@@ -24,10 +38,33 @@ fetch('/sessions/'+id, {
   })
 }).then(response => response.json())
     .then(data => {
+      console.log(data);
       if (!(data && (data.status === 'open' || data.status === 'active'))) {
         navigateBack();
       }
-    });
+      document.getElementById('room-name').innerHTML = data.subTopic;
+      toggleLoading(false);
+    }).catch(err => console.log(err));
+
+const messageContainer = document.getElementById("chat-messages");
+// get messages
+fetch('/sessions/'+id+'/messages', {
+  method: 'GET',
+  headers: new Headers({
+    Authorization: 'Bearer ' + token,
+    "Content-Type": "application/json"
+  })
+}).then(response => response.json())
+    .then(data => {
+      if (typeof data === typeof []) {
+        data.forEach(m => messageContainer.innerHTML += generateMsg({
+          username: m.username,
+          message: m.content
+        }, new Date(m.createdAt)));
+      }
+    }).catch(err => console.error(err));
+
+
 
 if (decodedPayload.userType === 'student') {
   document.getElementById('btnLeave').style.visibility = "hidden";
@@ -73,8 +110,8 @@ socket.on("tutor_leave", (data) => {
   ).innerHTML += `<p class="user-join"><small>Tutor ${data.username} left the session. Notifying available tutors...</small]></p><br>`;
 });
 
-const generateMsg = (data) => `<div class="message">
-<p class="meta">${data.username} <span>${formatDate(new Date())}</span></p>
+const generateMsg = (data, time = new Date()) => `<div class="message">
+<p class="meta">${data.username} <span>${formatDate(time)}</span></p>
 <p class="text">
     ${data.message}
 </p>

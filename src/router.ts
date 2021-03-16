@@ -9,5 +9,6 @@ router.get('/sessions/:id', auth, Controller.getSession);
 router.post('/sessions', auth, Controller.createSession);
 router.get('/sessions/state/:sessionState', auth, Controller.getSessionsByState);
 router.put('/sessions/:id', auth, Controller.endSession);
+router.get('/sessions/:id/messages', auth, Controller.getAllMessages);
 
 export default router;
