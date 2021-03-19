@@ -6,6 +6,7 @@ const users = [
     { userID: '1', email: "suhara@gmail.com", username: "suhara", password: "suhara123", userType: USER_TYPE.STUDENT },
     { userID: '2', email: "malith@gmail.com", username: "malith", password: "malith123", userType: USER_TYPE.STUDENT },
     { userID: '3', email: "ntb6184@gmail.com", username: "nandun", password: "nandun123", userType: USER_TYPE.TUTOR },
+    { userID: '5', email: "rocky@gmail.com", username: "rocky", password: "rocky123", userType: USER_TYPE.TUTOR },
     { userID: '4', email: "tutor@mailinator.com", username: "tutor", password: "1qaz2wsx@", userType: USER_TYPE.TUTOR },
 ];
 

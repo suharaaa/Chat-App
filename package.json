@@ -5,7 +5,8 @@
   "main": "server.js",
   "scripts": {
     "start": "tsc && cp -r public dist && node dist/server.js",
-    "dev": "./node_modules/nodemon/bin/nodemon.js -e ts,html,js,css --watch public --watch src --exec \"npm start\""
+    "dev": "./node_modules/nodemon/bin/nodemon.js -e ts,html,js,css --watch public --watch src --exec \"npm start\"",
+    "build": "tsc"
   },
   "author": "suhara",
   "license": "MIT",
