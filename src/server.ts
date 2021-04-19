@@ -76,6 +76,11 @@ io.on("connection", (socket: any) => {
   socket.on("user_typing", (data: any) => {
     socket.broadcast.to(roomId).emit("user_typing", { username: data.username });
   });
+
+  socket.on('draw', (data: any) => {
+    console.log(data);
+    socket.broadcast.emit('draw', data);
+  });
 });
 
 const PORT = config.PORT;
