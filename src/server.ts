@@ -7,6 +7,7 @@ import config from "./config";
 import MessageService from "./service";
 import Router from "./router";
 import bodyParser from "body-parser";
+import { IStroke } from "./model";
 
 const app: express.Application = express();
 const server = require("http").Server(app);
@@ -77,9 +78,10 @@ io.on("connection", (socket: any) => {
     socket.broadcast.to(roomId).emit("user_typing", { username: data.username });
   });
 
-  socket.on('draw', (data: any) => {
+  socket.on('draw', (data: IStroke) => {
     console.log(data);
     socket.broadcast.emit('draw', data);
+    MessageService.addStroke( roomId, data.prevX, data.prevY, data.currX, data.currY, data.strokeStyle, data.lineWidth);
   });
 });
 

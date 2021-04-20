@@ -44,6 +44,7 @@ fetch('/sessions/'+id, {
       }
       document.getElementById('room-name').innerHTML = data.subTopic;
       toggleLoading(false);
+      drawPreviousStrokes(data.whiteboard);
     }).catch(err => console.log(err));
 
 const messageContainer = document.getElementById("chat-messages");
@@ -294,6 +295,12 @@ function findxy(res, e) {
       draw();
     }
   }
+}
+
+function drawPreviousStrokes ( strokes ) {
+  strokes.forEach(stroke => {
+    drawOtherUser(stroke);
+  });
 }
 
 socket.on('draw', data => {

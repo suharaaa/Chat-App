@@ -45,4 +45,16 @@ export default class SessionService {
         }
     );
   }
+
+  public static async addStroke(roomId: string, prevX: Number, prevY: Number, currX: Number, currY: Number, strokeStyle: string, lineWidth: Number){ 
+    console.log('adding stroke to a room id', roomId);
+    await Session.updateOne(
+      { _id: roomId },
+      {
+        $push: {
+          whiteboard: { prevX, prevY, currX, currY, strokeStyle, lineWidth }
+        }
+      }
+    )
+  }
 }

@@ -11,6 +11,7 @@ export interface ISession extends Document {
   endBy: string;
   status: SESSION_STATE;
   joinedTutors: string[];
+  whiteboard: IStroke[];
 }
 
 export interface IMessage extends Document {
@@ -19,6 +20,15 @@ export interface IMessage extends Document {
   userID: string;
   userType: USER_TYPE;
   username: string;
+}
+
+export interface IStroke extends Document {
+  prevX: Number,
+  prevY: Number,
+  currX: Number,
+  currY: Number,
+  strokeStyle: string,
+  lineWidth: Number
 }
 
 export enum USER_TYPE {
@@ -54,6 +64,16 @@ const sessionSchema: Schema = new Schema(
     joinedTutors: [
         { type: String }
     ],
+    whiteboard: [
+      {
+        prevX: { type: Number},
+        prevY: { type: Number},
+        currX: { type: Number},
+        currY: { type: Number},
+        strokeStyle: { type: String},
+        lineWidth: { type: Number}
+      },
+    ]
   },
   { timestamps: true }
 );
