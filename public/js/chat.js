@@ -1,14 +1,14 @@
 const toggleLoading = (isLoading) => {
-  const chatContainer = document.getElementById('chatContainer');
-  const loader = document.getElementById('loader');
-  if(isLoading) {
+  const chatContainer = document.getElementById("chatContainer");
+  const loader = document.getElementById("loader");
+  if (isLoading) {
     loader.style.visibility = "visible";
-    chatContainer.style.visibility="hidden";
+    chatContainer.style.visibility = "hidden";
   } else {
-    chatContainer.style.visibility="visible";
+    chatContainer.style.visibility = "visible";
     loader.style.visibility = "hidden";
   }
-}
+};
 
 toggleLoading(true);
 
@@ -31,44 +31,52 @@ console.log(decodedPayload);
 
 // check if session is open
 // get session from db
-fetch('/sessions/'+id, {
+fetch("/sessions/" + id, {
   headers: new Headers({
-    Authorization: 'Bearer ' + token,
-    'Content-Type': 'application/json'
+    Authorization: "Bearer " + token,
+    "Content-Type": "application/json",
+  }),
+})
+  .then((response) => response.json())
+  .then((data) => {
+    console.log(data);
+    if (!(data && (data.status === "open" || data.status === "active"))) {
+      navigateBack();
+    }
+    document.getElementById("room-name").innerHTML = data.subTopic;
+    toggleLoading(false);
+    drawPreviousStrokes(data.whiteboard);
   })
-}).then(response => response.json())
-    .then(data => {
-      console.log(data);
-      if (!(data && (data.status === 'open' || data.status === 'active'))) {
-        navigateBack();
-      }
-      document.getElementById('room-name').innerHTML = data.subTopic;
-      toggleLoading(false);
-      drawPreviousStrokes(data.whiteboard);
-    }).catch(err => console.log(err));
+  .catch((err) => console.log(err));
 
 const messageContainer = document.getElementById("chat-messages");
 // get messages
-fetch('/sessions/'+id+'/messages', {
-  method: 'GET',
+fetch("/sessions/" + id + "/messages", {
+  method: "GET",
   headers: new Headers({
-    Authorization: 'Bearer ' + token,
-    "Content-Type": "application/json"
+    Authorization: "Bearer " + token,
+    "Content-Type": "application/json",
+  }),
+})
+  .then((response) => response.json())
+  .then((data) => {
+    if (typeof data === typeof []) {
+      data.forEach(
+        (m) =>
+          (messageContainer.innerHTML += generateMsg(
+            {
+              username: m.username,
+              message: m.content,
+            },
+            new Date(m.createdAt)
+          ))
+      );
+    }
   })
-}).then(response => response.json())
-    .then(data => {
-      if (typeof data === typeof []) {
-        data.forEach(m => messageContainer.innerHTML += generateMsg({
-          username: m.username,
-          message: m.content
-        }, new Date(m.createdAt)));
-      }
-    }).catch(err => console.error(err));
+  .catch((err) => console.error(err));
 
-
-
-if (decodedPayload.userType === 'student') {
-  document.getElementById('btnLeave').style.visibility = "hidden";
+if (decodedPayload.userType === "student") {
+  document.getElementById("btnLeave").style.visibility = "hidden";
 }
 
 // += means append to end of the string
@@ -98,16 +106,16 @@ socket.on("user_typing", (data) => {
 
 socket.on("end_session", (data) => {
   document.getElementById(
-      "chat-messages"
+    "chat-messages"
   ).innerHTML += `<p class="user-join"><small>Session ended by ${data.username}. Navigating back to home...</small]></p><br>`;
   setTimeout(() => {
     navigateBack();
-  }, 3000)
+  }, 3000);
 });
 
 socket.on("tutor_leave", (data) => {
   document.getElementById(
-      "chat-messages"
+    "chat-messages"
   ).innerHTML += `<p class="user-join"><small>Tutor ${data.username} left the session. Notifying available tutors...</small]></p><br>`;
 });
 
@@ -155,60 +163,79 @@ const sendTypingEvent = () => {
 
 const endSession = () => {
   socket.emit("end_session", { username, userType: decodedPayload.userType });
-  fetch('/sessions/' + id, {
-    method: 'PUT',
+  fetch("/sessions/" + id, {
+    method: "PUT",
     headers: new Headers({
-      Authorization: 'Bearer ' + token,
-      "Content-Type": "application/json"
+      Authorization: "Bearer " + token,
+      "Content-Type": "application/json",
+    }),
+  })
+    .then((response) => response.json())
+    .then((data) => {
+      navigateBack();
     })
-  }).then(response => response.json())
-      .then(data => {
-        navigateBack();
-      }).catch(err => console.error(err));
-}
+    .catch((err) => console.error(err));
+};
 
 const leaveSession = () => {
   socket.emit("tutor_leave", { username });
   window.location.href = "/sessions.html";
-}
-
+};
 
 const navigateBack = () => {
   if (decodedPayload.userType === "student") {
     window.location.href = "/index.html";
   } else {
-    window.location.href = "/sessions.html"
+    window.location.href = "/sessions.html";
   }
-}
+};
 
-var canvas, ctx, flag = false,
-    prevX = 0,
-    currX = 0,
-    prevY = 0,
-    currY = 0,
-    dot_flag = false;
+var canvas,
+  ctx,
+  flag = false,
+  prevX = 0,
+  currX = 0,
+  prevY = 0,
+  currY = 0,
+  dot_flag = false;
 
 var x = "black",
-    y = 2;
+  y = 2;
 
 function init() {
-  canvas = document.getElementById('can');
+  canvas = document.getElementById("can");
   ctx = canvas.getContext("2d");
   w = canvas.width;
   h = canvas.height;
 
-  canvas.addEventListener("mousemove", function (e) {
-    findxy('move', e)
-  }, false);
-  canvas.addEventListener("mousedown", function (e) {
-    findxy('down', e)
-  }, false);
-  canvas.addEventListener("mouseup", function (e) {
-    findxy('up', e)
-  }, false);
-  canvas.addEventListener("mouseout", function (e) {
-    findxy('out', e)
-  }, false);
+  canvas.addEventListener(
+    "mousemove",
+    function (e) {
+      findxy("move", e);
+    },
+    false
+  );
+  canvas.addEventListener(
+    "mousedown",
+    function (e) {
+      findxy("down", e);
+    },
+    false
+  );
+  canvas.addEventListener(
+    "mouseup",
+    function (e) {
+      findxy("up", e);
+    },
+    false
+  );
+  canvas.addEventListener(
+    "mouseout",
+    function (e) {
+      findxy("out", e);
+    },
+    false
+  );
 }
 
 function color(obj) {
@@ -237,7 +264,6 @@ function color(obj) {
   }
   if (x == "white") y = 14;
   else y = 2;
-
 }
 
 function draw() {
@@ -248,10 +274,17 @@ function draw() {
   ctx.lineWidth = y;
   ctx.stroke();
   ctx.closePath();
-  socket.emit('draw', { prevX, prevY, currX, currY, strokeStyle: 'green', lineWidth: y });
+  socket.emit("draw", {
+    prevX,
+    prevY,
+    currX,
+    currY,
+    strokeStyle: "green",
+    lineWidth: y,
+  });
 }
 
-function drawOtherUser({ prevX, prevY, currX, currY, strokeStyle, lineWidth}) {
+function drawOtherUser({ prevX, prevY, currX, currY, strokeStyle, lineWidth }) {
   ctx.beginPath();
   ctx.moveTo(prevX, prevY);
   ctx.lineTo(currX, currY);
@@ -267,7 +300,7 @@ function erase() {
 }
 
 function findxy(res, e) {
-  if (res == 'down') {
+  if (res == "down") {
     prevX = currX;
     prevY = currY;
     currX = e.clientX - canvas.offsetLeft;
@@ -283,10 +316,10 @@ function findxy(res, e) {
       dot_flag = false;
     }
   }
-  if (res == 'up' || res == "out") {
+  if (res == "up" || res == "out") {
     flag = false;
   }
-  if (res == 'move') {
+  if (res == "move") {
     if (flag) {
       prevX = currX;
       prevY = currY;
@@ -297,17 +330,17 @@ function findxy(res, e) {
   }
 }
 
-function drawPreviousStrokes ( strokes ) {
-  strokes.forEach(stroke => {
+function drawPreviousStrokes(strokes) {
+  strokes.forEach((stroke) => {
     drawOtherUser(stroke);
   });
 }
 
-socket.on('draw', data => {
+socket.on("draw", (data) => {
   drawOtherUser(data);
 });
 
-socket.on('erase', data => {
+socket.on("erase", (data) => {
   drawOtherUser(data);
 });
 
