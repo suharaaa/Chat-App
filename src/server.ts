@@ -79,9 +79,8 @@ io.on("connection", (socket: any) => {
   });
 
   socket.on('draw', (data: IStroke) => {
-    console.log(data);
     socket.broadcast.emit('draw', data);
-    MessageService.addStroke( roomId, data.prevX, data.prevY, data.currX, data.currY, data.strokeStyle, data.lineWidth);
+    // MessageService.addStroke( roomId, data.prevX, data.prevY, data.currX, data.currY, data.strokeStyle, data.lineWidth);
   });
 });
 

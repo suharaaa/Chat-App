@@ -1,6 +1,7 @@
 import {Request, Response} from 'express';
 import jwt from 'jsonwebtoken';
 import Session, {SESSION_STATE, USER_TYPE} from './model';
+import SessionService from "./service";
 
 const users = [
     { userID: '1', email: "suhara@gmail.com", username: "suhara", password: "suhara123", userType: USER_TYPE.STUDENT },
@@ -122,11 +123,25 @@ const endSession = async (req: Request, res: Response): Promise<Response | null>
     }
 }
 
+const addStrokesAsBatch = async (req: Request, res: Response): Promise<Response | null> => {
+    try {
+        console.log('add strokes as batch: ', req.params.id, req.body.strokes && req.body.strokes.length);
+        const result = await SessionService.addStrokesAsBatch(req.params.id, req.body.strokes);
+        return res.status(200).json(result);
+    } catch (err) {
+        console.log(err);
+        return res.status(500).json({
+            message: err.message
+        })
+    }
+}
+
 export default {
     getAllMessages,
     createSession,
     login,
     getSession,
     getSessionsByState,
-    endSession
+    endSession,
+    addStrokesAsBatch
 }

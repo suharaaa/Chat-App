@@ -202,11 +202,15 @@ var canvas,
 var x = "black",
   y = 2;
 
+let strokes = [];
+let tempStrokes = [];
+
 function init() {
   canvas = document.getElementById("can");
   ctx = canvas.getContext("2d");
   w = canvas.width;
   h = canvas.height;
+
 
   canvas.addEventListener(
     "mousemove",
@@ -314,10 +318,15 @@ function findxy(res, e) {
       ctx.fillRect(currX, currY, 2, 2);
       ctx.closePath();
       dot_flag = false;
+      strokes.push({ prevX, prevY, currX, currY,  strokeStyle: 'green', lineWidth: y});
     }
   }
   if (res == "up" || res == "out") {
     flag = false;
+    tempStrokes = strokes;
+    console.log('TempStrokes', tempStrokes);
+    strokes = [];
+    saveStrokesAsBatch();
   }
   if (res == "move") {
     if (flag) {
@@ -325,6 +334,7 @@ function findxy(res, e) {
       prevY = currY;
       currX = e.clientX - canvas.offsetLeft;
       currY = e.clientY - canvas.offsetTop;
+      strokes.push({ prevX, prevY, currX, currY,  strokeStyle: 'green', lineWidth: y});
       draw();
     }
   }
@@ -345,3 +355,15 @@ socket.on("erase", (data) => {
 });
 
 init();
+
+const saveStrokesAsBatch = () => {
+  fetch('/sessions/' + id + '/strokes', {
+    method: 'PUT',
+    headers: {
+      "Content-Type": "application/json",
+      "Authorization": "Bearer " + token
+    },
+    body: JSON.stringify({ strokes: tempStrokes })
+  }).then((response) => response.json())
+      .then(data => console.log(data));
+}
